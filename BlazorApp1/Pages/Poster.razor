@@ -11,9 +11,9 @@
     private string Url { get; set; }
     private string Titre { get; set; }
     private string API_Key = "4ed87f8b";
-    private void Rechercher()
+    private async Task Rechercher()
     {
-        Url = GetMovie(Titre).Result;
+        Url = await GetMovie(Titre);
     }
     private async Task<string> GetMovie(string name)
     {
