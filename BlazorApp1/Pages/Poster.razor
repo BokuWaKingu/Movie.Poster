@@ -1,0 +1,33 @@
+﻿@page "/poster"
+@using RestSharp
+@using System.Text.Json
+@using static BlazorApp1.Pages.Poster
+<h3>Component</h3>
+<input type="text" placeholder="Entrez un nom de film" @bind ="Titre"/>
+<button @onclick="Rechercher">Rechercher</button>
+<img src="@this.Url" />
+
+@code {
+    private string Url { get; set; }
+    private string Titre { get; set; }
+    private string API_Key = "4ed87f8b";
+    private void Rechercher()
+    {
+        Url = GetMovie(Titre).Result;
+    }
+    private async Task<string> GetMovie(string name)
+    {
+        var client = new RestClient();
+        var request = new RestRequest($"http://www.omdbapi.com/?apikey={API_Key}&t={name}");
+        request.AddHeader("Accept", "application/json");
+        var response = await client.GetAsync(request);
+        Movie movies = JsonSerializer.Deserialize<Movie>(response.Content);
+
+        return movies.Poster;
+    }
+    public class Movie
+    {
+        public string Title { get; set; }
+        public string Poster { get; set; }
+    }
+}
